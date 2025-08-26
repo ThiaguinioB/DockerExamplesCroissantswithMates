@@ -59,6 +59,53 @@ def health_check():
     except Exception as e:
         return f'❌ Health check failed: {str(e)}'
 
+
+@app.route('/donaciones', methods=['GET', 'POST'])
+def contador_donaciones():
+    try:
+        redis_client = wait_for_redis()
+
+        # Si el usuario presiona el botón, sumamos +1 dólar
+        if request.method == 'POST':
+            redis_client.incr('donaciones')
+
+        # Obtenemos el total de donaciones
+        donaciones = redis_client.get('donaciones')
+        donaciones = int(donaciones) if donaciones else 0
+
+        return f'''
+        <html>
+            <body style="font-family: Arial; text-align: center; padding: 50px; background-color: #f4f4f9;">
+                <h1>💖 Contador de Donaciones</h1>
+                <p style="font-size: 24px;">
+                    Total donado: <strong>{donaciones}</strong> $USD 🙏
+                </p>
+
+                <form method="POST">
+                    <button type="submit" style="font-size: 20px; padding: 10px 20px; border-radius: 10px; background: #4CAF50; color: white; border: none;">
+                        ➕ Donar 1 USD
+                    </button>
+                </form>
+
+                <br>
+                <a href="/reiniciar_donaciones">🔄 Reiniciar contador de donaciones</a> | 
+                <a href="/">🏠 Volver a inicio</a>
+            </body>
+        </html>
+        '''
+    except Exception as e:
+        return f'❌ Error en donaciones: {str(e)}'
+
+
+@app.route('/reiniciar_donaciones')
+def reiniciar_donaciones():
+    try:
+        redis_client = wait_for_redis()
+        redis_client.set('donaciones', 0)
+        return '✅ ¡Contador de donaciones reiniciado! <a href="/donaciones">Volver</a>'
+    except Exception as e:
+        return f'❌ Error: {str(e)}'
+
 if __name__ == '__main__':
     print("🚀 Iniciando aplicación Flask + Redis...")
     app.run(host='0.0.0.0', port=5000)
