@@ -14,7 +14,6 @@ flagsmith = Flagsmith(
     environment_key="XYvDRZ8RzugQuuuCPsJPxY",
 )
 
-
 #------------------------------------------------------------------------------------------
 def wait_for_redis():
     """Esperar a que Redis esté disponible"""
@@ -39,10 +38,11 @@ def contador_visitas():
         redis_client = wait_for_redis()
         visitas = redis_client.incr('visitas')
 
+
+        # Verificamos si la feature flag está activada
         flags = flagsmith.get_environment_flags()
         mostrar_enlace = flags.is_feature_enabled('contadordonaciones')
-        
-
+        #estado de flag guardado en variable para mostrar o no el enlace
         if mostrar_enlace: 
             donaciones_html = '<p>Si quieres donar, haz clic <a href="/donaciones">aquí</a> 💖</p>'
         else: 
@@ -92,7 +92,8 @@ def contador_donaciones():
         # Verificamos si la feature flag está activada
         flags = flagsmith.get_environment_flags()
         mostrar_donaciones = flags.is_feature_enabled('contadordonaciones')
-
+        
+        # Si la flag está desactivada, mostramos un mensaje y no permitimos donar
         if not mostrar_donaciones:
             return '<p>❌ La funcionalidad de donaciones está deshabilitada.</p> <a href="/">🏠 Volver</a>'
 
