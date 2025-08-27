@@ -1,9 +1,15 @@
-from flask import Flask
+from flask import Flask, request
 import redis
 import time
 import os
 
 app = Flask(__name__)
+
+from flagsmith import Flagsmith
+
+flagsmith = Flagsmith(
+    environment_key="duW6XVmRDEU44Xwr3YVSju"
+)
 
 def wait_for_redis():
     """Esperar a que Redis esté disponible"""
@@ -26,18 +32,37 @@ def wait_for_redis():
 def contador_visitas():
     try:
         redis_client = wait_for_redis()
+
+        flags = flagsmith.get_environment_flags()
+        grosse_police = flags.is_feature_enabled('dark_launch_test')
+        print("grosse police =", grosse_police)
+
         visitas = redis_client.incr('visitas')
-        return f'''
-        <html>
-            <body style="font-family: Arial; text-align: center; padding: 50px;">
-                <h1>📊 Contador de Visitas</h1>
-                <p style="font-size: 24px;">¡Número de visitas: <strong>{visitas}</strong>! 🎉</p>
-                <p>✅ Redis funcionando correctamente</p>
-                <a href="/reiniciar">🔄 Reiniciar contador</a> | 
-                <a href="/health">❤️ Health check</a>
-            </body>
-        </html>
-        '''
+        if grosse_police:
+            return f'''
+            <html>
+                <body style="font-family: Arial; text-align: center; padding: 50px;">
+                    <h1>📊 Contador de Visitas</h1>
+                    <p style="font-size: 240px;">¡Número de visitas: <strong>{visitas}</strong>! 🎉</p>
+                    <p>✅ Redis funcionando correctamente</p>
+                    <a href="/reiniciar">🔄 salut salut</a> | 
+                    <a href="/health">❤️ Health check</a>
+                </body>
+            </html>
+            '''
+        else:
+            return f'''
+            <html>
+                <body style="font-family: Arial; text-align: center; padding: 50px;">
+                    <h1>📊 Contador de Visitas</h1>
+                    <p style="font-size: 24px;">Grosse police: <strong>{grosse_police}</strong>! 🎉</p>
+                    <p style="font-size: 24px;">¡Número de visitas: <strong>{visitas}</strong>! 🎉</p>
+                    <p>✅ Redis funcionando correctamente</p>
+                    <a href="/reiniciar">🔄 Reiniciar contador</a> | 
+                    <a href="/health">❤️ Health check</a>
+                </body>
+            </html>
+            '''
     except Exception as e:
         return f'❌ Error: {str(e)}'
 
