@@ -1,2 +1,4 @@
-flask
-redis
+# Dependencias de Python necesarias para la app
+flask           # Framework web
+redis           # Cliente para Redis
+splitio-client  # SDK de Split para feature flags
