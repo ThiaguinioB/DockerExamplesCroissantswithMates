@@ -5,3 +5,10 @@ services:
     build: .
     ports:
       - "5000:5000"
+    # Carga las variables de entorno desde el archivo .env
+    env_file:
+      - .env
+    depends_on:
+      - redis # Asegura que Redis esté disponible antes de iniciar la app
+  redis:
+    image: "redis:alpine" # Usa una imagen ligera de Redis

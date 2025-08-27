@@ -1,0 +1,30 @@
+# Ignorar archivos de entorno y credenciales
+.env
+
+# Archivos y carpetas de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Archivos de logs
+*.log
+
+# Archivos de Docker
+*.pid
+
+# Archivos de configuración de entorno de desarrollo
+.vscode/
+.idea/
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Volúmenes y datos temporales
+*.sqlite3
+db.sqlite3
+
+# Otros archivos sensibles o temporales
+*.bak
+*.swp
