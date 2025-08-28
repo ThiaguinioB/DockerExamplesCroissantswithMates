@@ -55,7 +55,6 @@ def contador_visitas():
             <html>
                 <body style="font-family: Arial; text-align: center; padding: 50px;">
                     <h1>📊 Contador de Visitas</h1>
-                    <p style="font-size: 24px;">Grosse police: <strong>{grosse_police}</strong>! 🎉</p>
                     <p style="font-size: 24px;">¡Número de visitas: <strong>{visitas}</strong>! 🎉</p>
                     <p>✅ Redis funcionando correctamente</p>
                     <a href="/reiniciar">🔄 Reiniciar contador</a> | 
